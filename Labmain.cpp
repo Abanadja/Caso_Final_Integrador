@@ -4,9 +4,7 @@
 
 #include <iostream>
 #include <string>
-#include <cstdio>
-
-using namespace std;
+#include <fstream>
 
 struct ColorConsole
 {
@@ -17,54 +15,47 @@ struct ColorConsole
 struct ConsoleBox
 {
     void new_text() {/*...*/}
-    void set_text(const string &text) { cout << text << endl; }
+    void set_text(const std::string &text) { std::cout << text << std::endl; }
 };
 
 ConsoleBox *consoleBox = new ConsoleBox; // suponemos que ya está inicializado
 
 void load_script(const char* filename, bool show_script = false)
 {
-    string script;
-    FILE* f = nullptr;
+    std::string script;
+    std::ifstream file_stream(filename, std::ios::binary);
+    if (!file_stream)
+    {
+        std::cerr << "Error de apertura de " << filename << std::endl;
+        return;
+    }
+
     try
     {
-        f = fopen(filename, "rb");
-        if (!f)
+        std::string line;
+        while (std::getline(file_stream, line))
         {
-            cerr << "error de apertura de " << filename << endl;
-            return;
+            script += line + '\n';
         }
-
-        int c;
-        char buf[4001];
-        while ((c = fread(buf, 1, 4000, f)) > 0)
-        {
-            buf[c] = 0;
-            script.append(buf);
-        }
-        fclose(f);
-        f = nullptr;
 
         if (show_script)
         {
-            cout << ColorConsole::fg_blue << ColorConsole::bg_white;
-            cout << script << endl;
+            std::cout << ColorConsole::fg_blue << ColorConsole::bg_white;
+            std::cout << script << std::endl;
         }
         consoleBox->new_text();
         consoleBox->set_text(script);
     }
-    catch (...)
+    catch (const std::exception& e)
     {
-        cerr << "error durante la lectura del archivo" << endl;
-        if(f)
-            fclose(f);
+        std::cerr << "Error durante la lectura del archivo: " << e.what() << std::endl;
     }
 }
 
 void load_script()
 {
     char filename[500];
-    printf("Archivo: ");
-    scanf("%499s", filename);
+    std::cout << "Archivo: ";
+    std::cin.getline(filename, 500);
     load_script(filename, true);
 }
