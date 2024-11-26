@@ -32,3 +32,34 @@ El código tiene un manejo de errores sólido y completo para el caso de que el 
 El código tiene un manejo de errores sólido y completo para el caso de que el archivo proporcionado no se pueda abrir por alguna razón. (15 puntos)
 El código tiene un manejo de errores sólido y completo para el caso de que se produzca un error de lectura durante la lectura del archivo. (20 puntos)
 Total: 100 puntos
+
+## Correción práctica Caso Integrador Pablo Alcolea
+El trabajo realizado es bastante completo teniendo encuenta cosas como try-catch y teniendo una buena estructura como en lo siguiente:
+
+```cpp
+void load_script(const string& filename, bool show_script) {
+    string script;
+
+    try {
+        ifstream file(filename, ios::binary);
+        if (!file.is_open()) {
+            cerr << "Error: No se ha podido abrir el archivo. " << filename << endl;
+            return;
+        }
+
+        // Leer el contenido del archivo
+        script.assign((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+
+        if (show_script) {
+            ColorConsole::print_colored_text(script, ColorConsole::fg_blue, ColorConsole::bg_white);
+        }
+
+        consoleBox->new_text();
+        consoleBox->set_text(script);
+    } catch (const ios_base::failure& e) {
+        cerr << "Error: Ha ocurrido una excepción leyendo este archivo: " << e.what() << endl;
+    } catch (const exception& e) {
+        cerr << "Error: Excepción desconocida: " << e.what() << endl;
+    }
+}
+```
