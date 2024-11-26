@@ -63,3 +63,12 @@ void load_script(const string& filename, bool show_script) {
     }
 }
 ```
+Para mejorar no hay muchas cosas importantes, pero se podría añadir 
+```cpp
+    static void print_colored_text(const string& text, const string& fg_color, const string& bg_color) {
+        cout << fg_color << bg_color << text << reset << endl;
+    }
+```
+En el archivo .h no veo necesidad de cambios y ya en el main tenemos el load_script que está bastante bien y como puntos 
+a mejorar podríamos tener en cuenta control de excepciones y también una mejor interfaz(secundario para esta práctica)
+Por el resto no veo ningun problema y todo perfecto (goty)
